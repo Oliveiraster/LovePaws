@@ -10,7 +10,5 @@ const imgUp = require('../helpers/imgs')
     router.get('/checkuser', UserController.checkUser)
     router.get('/:id', UserController.getUserById)
     router.patch('/edit/:id',auth, imgUp.single('image'), UserController.editUser)
-    
-
 
 module.exports = router
