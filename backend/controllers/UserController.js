@@ -12,9 +12,9 @@ module.exports = class UserController{
       const validations = [
         { campo: name, message: 'O nome é obrigatório!' },
         { campo: email, message: 'O email é obrigatório!' },
+        { campo: phone, message: 'O telefone é obrigatório!' },
         { campo: password, message: 'A senha é obrigatória!' },
-        { campo: confirmPassword, message: 'A confirmação da senha é obrigatória!' },
-        { campo: phone, message: 'O telefone é obrigatório!' }
+        { campo: confirmPassword, message: 'A confirmação da senha é obrigatória!' }
       ]  
       for( const objCampo of validations){
         if (!objCampo.campo){
