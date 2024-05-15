@@ -18,7 +18,8 @@ const Navbar= () => {
         <ul>
             <li> <Link to={'/'}>Adotar</Link> </li>
             {auth ? (<>
-                <li> <Link to={'/profile'}>Perfil</Link> </li>
+                <li> <Link to={'/pet/mypets'}>Meus Pets</Link> </li>
+                <li> <Link to={'/user/profile'}>Perfil</Link> </li>
                 <li onClick={logout}>Sair</li> 
             </>):(<>
                 <li> <Link to={'/login'}>Entrar</Link> </li>
