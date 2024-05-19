@@ -57,8 +57,7 @@ const Profile = () => {
             msgType = 'fail'
             return err.response.data
         })
-        setFlashMessage
-        (data.message, msgType)
+        setFlashMessage(data.message, msgType)
     }
 
     return (

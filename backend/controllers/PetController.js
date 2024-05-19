@@ -2,13 +2,15 @@ const Pet = require('../models/Pet')
 
 const getToken = require('../helpers/getToken')
 const getTokenUser = require('../helpers/getTokenUser')
-const ObjectId = require('mongoose')
+
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 
 module.exports = class PetController{
     static async create(req, res){
 
       const {name, age, weight, color} = req.body
-      const image = req.files
+      const images = req.files
       const available = true
 
       const validations = [
@@ -22,7 +24,7 @@ module.exports = class PetController{
             return res.status(422).json({message: objCampo.message})
         } 
       }
-      if(image.length === 0){
+      if(images.length === 0){
          return res.status(422).json({message:'A imagem é obrigatoria!'})
       }
       const user = await getTokenUser(getToken(req))
@@ -42,7 +44,7 @@ module.exports = class PetController{
         }
       })
 
-      image.map(image => {
+      images.map(image => {
         pet.images.push(image.filename)
       })
 
@@ -50,7 +52,7 @@ module.exports = class PetController{
         const newPet = await pet.save()
         res.status(201).json({message: `${newPet.name} cadastrado! `, newPet})
       } catch (err) {
-        
+        res.status(500).json({ message: err })
       }
     }
 
@@ -88,30 +90,34 @@ module.exports = class PetController{
          return res.status(404).json({message: 'Pet não encontrado!'})
       }
 
-      return res.status(200).json({pets:pet})
+      return res.status(200).json({pet:pet})
     }
 
     static async removePet(req, res){
-       const id  =  req.params.id 
+      try{
+        const id  =  req.params.id 
        
-       if(!ObjectId.isValid(id)){
-        return res.status(422).json({message: 'ID invalido'})
+        if(!ObjectId.isValid(id)){
+          return res.status(422).json({message: 'ID invalido'})
+        }
+
+        const pet = await Pet.findOne({_id: id})
+
+        if(!pet){
+          return res.status(404).json({message: 'Pet não encontrado!'})
+        }
+        
+        const user = await getTokenUser(getToken(req))
+
+        if(pet.user._id.toString() !== user._id.toString()){
+          return res.status(422).json({message: 'Problema ao verificar sua solicitação!'})
+        }
+
+        await Pet.findByIdAndDelete(id)
+        res.status(200).json({message:' Pet removido!'})
+      } catch(err){
+        console.log(err)
       }
-
-      const pet = await Pet.findOne({_id: id})
-
-      if(!pet){
-         return res.status(404).json({message: 'Pet não encontrado!'})
-      }
-      
-      const user = await getTokenUser(getToken(req))
-
-      if(pet.user._id.toString() !== user._id.toString()){
-        return res.status(422).json({message: 'Problema ao verificar sua solicitação!'})
-      }
-
-      await Pet.findByIdAndDelete(id)
-      res.status(200).json({message:' Pet removido!'})
     }
 
     static async attPet(req, res){
@@ -136,9 +142,7 @@ module.exports = class PetController{
       upData.weight = weight
       upData.color = color
 
-      if(images.length === 0){
-        return res.status(422).json({message:'A imagem é obrigatoria!'})
-      } else {
+      if(images.length > 0){
         upData.images = []
         images.map((image) => {
           upData.images.puss(image.filename)

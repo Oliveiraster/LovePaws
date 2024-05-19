@@ -11,7 +11,7 @@ const localImg = multer.diskStorage({
             folder = 'pets'
         }
      
-        cb(null, `public/images/${folder}`)
+        cb(null, `public/images/${folder}/`)
     },
     filename: function( req, file, cb){
         cb(null, Date.now() + String(Math.floor(Math.random() * 1000)) + path.extname(file.originalname))
@@ -21,8 +21,8 @@ const localImg = multer.diskStorage({
 const imgUp = multer({
     storage: localImg,
     fileFilter(req, file, cb){
-        if(!file.originalname.match(/\.(png|jpeg|jpg)$/)){
-            return  cb(new Error('O formato imcopativel, Formato valido: png | jpg !'))
+        if (!file.originalname.match(/\.(png|jpg)$/)){
+            return cb(new Error("Por favor, envie apenas png ou jpg!"))
         }
         cb(undefined, true)
     }
