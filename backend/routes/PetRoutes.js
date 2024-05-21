@@ -12,7 +12,7 @@ router.get('/myadoptions', auth, PetController.getAllUserAdoptions)
 router.get('/:id', PetController.getPetId)
 router.delete('/:id',auth, PetController.removePet)
 router.patch('/:id', auth, imgUp.array('images'), PetController.attPet)
-router.patch('/toMark', auth, PetController.toMark)
+router.patch('/toMark/:id', auth, PetController.toMark)
 router.patch('/conclude/:id', auth, PetController.concludeAdoption)
 
 

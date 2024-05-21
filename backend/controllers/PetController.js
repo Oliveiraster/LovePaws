@@ -159,7 +159,7 @@ module.exports = class PetController{
     }
 
     static async toMark(req, res){
-      const id = params.id
+      const id = req.params.id
       
       const pet = await Pet.findOne({_id: id})
 
